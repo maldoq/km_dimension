@@ -66,4 +66,4 @@ class DonneesPoutrelle(Base):
         self.mue = mu / (b * (self.d ** 2) * self.fbu * 10 ** 4)
         self.alpha = 1.25 * (1 - mt.sqrt(1 - 2 * self.mue))
         self.z = self.d * (1 - 0.4 * self.alpha)
-        self.ast = (mu * 10 ** -2) / (self.z * fsu * 10 ** 3)
+        self.ast = ((mu * 10 ** -2) / (self.z * fsu * 10 ** 3))*10 ** 4

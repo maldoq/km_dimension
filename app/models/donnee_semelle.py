@@ -11,7 +11,7 @@ class DonneesSemelle(Base):
     fiche_id = Column(Integer, ForeignKey("fichecalcul.id"), unique=True)
 
     # Variables
-    a = Column(Float)
+    a = Column(Float) 
     b = Column(Float)
     g = Column(Float)
     q = Column(Float)

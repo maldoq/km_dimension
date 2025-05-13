@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from fastapi.responses import StreamingResponse
+import io
+from app.utils.pdf_generator import generate_pdf_escalier
 from app.schemas.donnee_escalier import DonneesEscalierCreate, DonneesEscalierUpdate, DonneesEscalierRead, DonneesEscalierDetail
 from app.crud import donnee_escalier as crud
 from app.database import get_db
@@ -41,3 +44,14 @@ def delete(donnees_id: int, db: Session = Depends(get_db), current_user: User = 
     if obj is None:
         raise HTTPException(status_code=404, detail="Donnée non trouvée")
     return {"ok": True}
+
+@router.get("/{donnee_id}/pdf", response_class=StreamingResponse)
+def generate_pdf(donnee_id: int, db: Session = Depends(get_db)):
+    obj = crud.get_donnees_escalier(db, donnee_id)
+    if not obj:
+        raise HTTPException(status_code=404, detail="Donnée introuvable")
+
+    pdf_content = generate_pdf_escalier(data=obj.__dict__)
+    return StreamingResponse(io.BytesIO(pdf_content), media_type="application/pdf", headers={
+        "Content-Disposition": f"inline; filename=donnee_escalier_{donnee_id}.pdf"
+    })

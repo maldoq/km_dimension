@@ -10,7 +10,7 @@ class DonneesPoteau(Base):
     id = Column(Integer, primary_key=True, index=True)
     fiche_id = Column(Integer, ForeignKey("fichecalcul.id"), unique=True)
 
-    # Variables
+    # Variables 
     a = Column(Float)  # Largeur du poteau (centimètre)
     b = Column(Float)  # Longueur du poteau (centimètre)
     lf = Column(Float)  # Largeur d'influence (centimètre)
@@ -21,9 +21,8 @@ class DonneesPoteau(Base):
     # Paramètres par défaut
     gamma_s = Column(Float, default=1.15)
     gamma_b = Column(Float, default=1.5)
-
+ 
     # Variables calculées
-    ns = Column(Float)
     I_min = Column(Float)  # Inertie minimale (centimètre exposant 4)
     Bb = Column(Float)  # Périmètre (centimètre carré)
     i = Column(Float)  # (centimètre)

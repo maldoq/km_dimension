@@ -28,7 +28,6 @@ class DonneesEscalier(Base):
     theta = Column(Float, default=1)
 
     # Variables calculées
-    ns = Column(Float)
     pu = Column(Float)
     ps = Column(Float)
     mu = Column(Float)

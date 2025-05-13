@@ -18,7 +18,7 @@ class DonneesPoutre(Base):
     lx = Column(Float)
     c = Column(Float)
     h = Column(Float)
-    b = Column(Float)
+    b = Column(Float) 
 
     # Paramètres par défaut
     gamma_b = Column(Float, default=1.5)

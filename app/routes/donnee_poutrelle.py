@@ -53,5 +53,5 @@ def generate_pdf(donnee_id: int, db: Session = Depends(get_db)):
 
     pdf_content = generate_pdf_poutrelle(data=obj.__dict__)
     return StreamingResponse(io.BytesIO(pdf_content), media_type="application/pdf", headers={
-        "Content-Disposition": f"inline; filename=donnee_poutre_{donnee_id}.pdf"
+        "Content-Disposition": f"inline; filename=donnee_poutrelle_{donnee_id}.pdf"
     })
