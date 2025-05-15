@@ -8,6 +8,7 @@ class FicheCalcul(Base):
     __tablename__ = "fichecalcul"
 
     id = Column(Integer, primary_key=True, index=True)
+    image_url = Column(String, nullable=True) # URL de l'image
     titre = Column(String, nullable=False)
     formule_id = Column(Integer, ForeignKey("formule.id"))
     utilisateur_id = Column(Integer, ForeignKey("user.id"))

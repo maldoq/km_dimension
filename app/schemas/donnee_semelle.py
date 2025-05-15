@@ -28,6 +28,7 @@ class DonneesSemelleRead(DonneesSemelleBase):
 
 
 class DonneesSemelleDetail(DonneesSemelleRead):
+    image_url: Optional[str]
     gamma_b: float
     gamma_s: float
     ns: float

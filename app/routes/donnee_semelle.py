@@ -1,15 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.responses import StreamingResponse
 import io
+import os
+import shutil
 from app.utils.pdf_generator import generate_pdf_semelle
 from app.schemas.donnee_semelle import DonneesSemelleCreate, DonneesSemelleUpdate, DonneesSemelleRead, DonneesSemelleDetail
 from app.crud import donnee_semelle as crud
 from app.database import get_db
 from app.auth import get_current_user  # assure-toi que ce dépendance fonctionne
 from app.models.user import User
+from app.models.donnee_semelle import DonneesSemelle
 
 router = APIRouter(prefix="/donnees/semelle", tags=["DonneesSemelle"])
+
+UPLOAD_DIR = "static/images/donnees_semelle"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post("/", response_model=DonneesSemelleRead)
@@ -55,3 +61,20 @@ def generate_pdf(donnee_id: int, db: Session = Depends(get_db)):
     return StreamingResponse(io.BytesIO(pdf_content), media_type="application/pdf", headers={
         "Content-Disposition": f"inline; filename=donnee_semelle_{donnee_id}.pdf"
     })
+
+@router.post("/{semelle_id}/upload-image/")
+def upload_image_semelle(semelle_id: int, file: UploadFile = File(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    semelle = db.query(DonneesSemelle).filter(DonneesSemelle.id == semelle_id).first()
+    if not semelle:
+        raise HTTPException(status_code=404, detail="semelle non trouvée.")
+
+    filename = f"semelle_{semelle_id}_{file.filename}"
+    file_path = os.path.join(UPLOAD_DIR, filename)
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    semelle.image_url = f"/{file_path}"  # ou une URL publique selon ton setup
+    db.commit()
+
+    return {"message": "Image uploadée avec succès", "image_url": semelle.image_url}

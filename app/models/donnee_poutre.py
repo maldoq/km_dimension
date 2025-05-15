@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Float
+from sqlalchemy import Column, Integer, ForeignKey, Float, String
 from sqlalchemy.orm import relationship
 from app.database import Base
 import math as mt
@@ -8,6 +8,7 @@ class DonneesPoutre(Base):
     __tablename__ = "donneespoutre"
 
     id = Column(Integer, primary_key=True, index=True)
+    image_url = Column(String, nullable=True)  # <--- CHAMP AJOUTÉ
     fiche_id = Column(Integer, ForeignKey("fichecalcul.id"), unique=True)
 
     # Variables

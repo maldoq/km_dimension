@@ -30,6 +30,7 @@ class DonneesPoutreRead(DonneesPoutreBase):
 
 
 class DonneesPoutreDetail(DonneesPoutreRead):
+    image_url: Optional[str]
     gamma_b: float
     theta: float
     fbu: float

@@ -28,6 +28,7 @@ class DonneesPoteauRead(DonneesPoteauBase):
 
 
 class DonneesPoteauDetail(DonneesPoteauRead):
+    image_url: Optional[str]
     gamma_b: float
     gamma_s: float
     ns: float

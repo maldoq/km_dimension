@@ -3,6 +3,7 @@
 from app import auth
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
+from fastapi.staticfiles import StaticFiles
 
 from app import database
 from app.routes import formule, fiche_calcul, donnee_poutrelle, donnee_poutre, donnee_semelle, donnee_poteau, donnee_escalier
@@ -20,6 +21,8 @@ app.include_router(donnee_poutre.router)
 app.include_router(donnee_semelle.router)
 app.include_router(donnee_poteau.router)
 app.include_router(donnee_escalier.router)
+
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Exemple d'utilisation de la session DB
 def get_db():

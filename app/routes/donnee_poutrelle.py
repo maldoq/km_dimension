@@ -1,15 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.responses import StreamingResponse
 import io
+import os
+import shutil
 from app.utils.pdf_generator import generate_pdf_poutrelle
 from app.schemas.donnee_poutrelle import DonneesPoutrelleCreate, DonneesPoutrelleUpdate, DonneesPoutrelleRead, DonneesPoutrelleDetail
 from app.crud import donnee_poutrelle as crud
 from app.database import get_db
 from app.auth import get_current_user  # assure-toi que ce dépendance fonctionne
 from app.models.user import User
+from app.models.donnee_poutrelle import DonneesPoutrelle
 
 router = APIRouter(prefix="/donnees/poutrelle", tags=["DonneesPoutrelle"])
+
+UPLOAD_DIR = "static/images/donnees_poutrelle"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post("/", response_model=DonneesPoutrelleRead)
@@ -55,3 +61,20 @@ def generate_pdf(donnee_id: int, db: Session = Depends(get_db)):
     return StreamingResponse(io.BytesIO(pdf_content), media_type="application/pdf", headers={
         "Content-Disposition": f"inline; filename=donnee_poutrelle_{donnee_id}.pdf"
     })
+
+@router.post("/{poutrelle_id}/upload-image/")
+def upload_image_poutrelle(poutrelle_id: int, file: UploadFile = File(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    poutrelle = db.query(DonneesPoutrelle).filter(DonneesPoutrelle.id == poutrelle_id).first()
+    if not poutrelle:
+        raise HTTPException(status_code=404, detail="poutrelle non trouvée.")
+
+    filename = f"poutrelle_{poutrelle_id}_{file.filename}"
+    file_path = os.path.join(UPLOAD_DIR, filename)
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    poutrelle.image_url = f"/{file_path}"  # ou une URL publique selon ton setup
+    db.commit()
+
+    return {"message": "Image uploadée avec succès", "image_url": poutrelle.image_url}

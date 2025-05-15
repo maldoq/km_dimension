@@ -15,6 +15,7 @@ class FicheCalculUpdate(BaseModel):
 class FicheCalculResponse(BaseModel):
     id: int
     titre: str
+    image_url: Optional[str]
     formule_id: int
     utilisateur_id: int
     resultat: Optional[str]

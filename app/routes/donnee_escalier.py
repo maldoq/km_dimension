@@ -1,15 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.responses import StreamingResponse
 import io
+import os
+import shutil
 from app.utils.pdf_generator import generate_pdf_escalier
 from app.schemas.donnee_escalier import DonneesEscalierCreate, DonneesEscalierUpdate, DonneesEscalierRead, DonneesEscalierDetail
 from app.crud import donnee_escalier as crud
 from app.database import get_db
 from app.auth import get_current_user  # assure-toi que ce dépendance fonctionne
 from app.models.user import User
+from app.models.donnee_escalier import DonneesEscalier
 
 router = APIRouter(prefix="/donnees/escalier", tags=["DonneesEscalier"])
+
+UPLOAD_DIR = "static/images/donnees_escalier"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post("/", response_model=DonneesEscalierRead)
@@ -55,3 +61,20 @@ def generate_pdf(donnee_id: int, db: Session = Depends(get_db)):
     return StreamingResponse(io.BytesIO(pdf_content), media_type="application/pdf", headers={
         "Content-Disposition": f"inline; filename=donnee_escalier_{donnee_id}.pdf"
     })
+
+@router.post("/{escalier_id}/upload-image/")
+def upload_image_escalier(escalier_id: int, file: UploadFile = File(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    escalier = db.query(DonneesEscalier).filter(DonneesEscalier.id == escalier_id).first()
+    if not escalier:
+        raise HTTPException(status_code=404, detail="Escalier non trouvée.")
+
+    filename = f"escalier_{escalier_id}_{file.filename}"
+    file_path = os.path.join(UPLOAD_DIR, filename)
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    escalier.image_url = f"/{file_path}"  # ou une URL publique selon ton setup
+    db.commit()
+
+    return {"message": "Image uploadée avec succès", "image_url": escalier.image_url}

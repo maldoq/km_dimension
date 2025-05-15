@@ -32,6 +32,7 @@ class DonneesEscalierRead(DonneesEscalierBase):
 
 
 class DonneesEscalierDetail(DonneesEscalierRead):
+    image_url: Optional[str]
     gamma_b: float
     gamma_s: float
     theta: float

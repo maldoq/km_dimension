@@ -28,6 +28,7 @@ class DonneesPoutrelleRead(DonneesPoutrelleBase):
 
 
 class DonneesPoutrelleDetail(DonneesPoutrelleRead):
+    image_url: Optional[str]
     b: float
     b0: float
     gamma_b: float
