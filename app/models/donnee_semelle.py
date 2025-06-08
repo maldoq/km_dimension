@@ -12,28 +12,28 @@ class DonneesSemelle(Base):
     fiche_id = Column(Integer, ForeignKey("fichecalcul.id"), unique=True)
 
     # Variables
-    a = Column(Float) 
-    b = Column(Float)
-    g = Column(Float)
-    q = Column(Float)
-    cont_adm = Column(Float)
-    fe = Column(Float)
+    a = Column(Float) # largeur du poteau (en mètre)
+    b = Column(Float) # Longueur du poteau (en mètre)
+    g = Column(Float) # charge pemanente (en tonne)
+    q = Column(Float) # charge d'exploitation (en tonne)
+    cont_adm = Column(Float) # contrainte admissible (en méga-pascal)
+    fe = Column(Float) # coefficient de résistence de l'acier (en méga-pascal)
 
     # Paramètres par défaut
     gamma_s = Column(Float, default=1.5)
 
     # Variables calculées
-    ns = Column(Float)
-    nu = Column(Float)
-    Aa = Column(Float)
-    Bb = Column(Float)
-    d1 = Column(Float)
-    d2 = Column(Float)
-    d = Column(Float)
-    h = Column(Float)
-    h_metre = Column(Float)
-    As__A = Column(Float)
-    As__B = Column(Float)
+    ns = Column(Float) # Effort normale (en tonne)
+    nu = Column(Float) # Effort ultime (en tonne)
+    Aa = Column(Float) # Largeur de la semelle (en mètre)
+    Bb = Column(Float) # Longueur de la semelle (en mètre)
+    d1 = Column(Float) # (en mètre)
+    d2 = Column(Float) # (en mètre)
+    d = Column(Float) # (en mètre)
+    h = Column(Float) # hauteur de la semelle (en centimètre)
+    h_metre = Column(Float) # hauteur de la semelle (en mètre)
+    As__A = Column(Float) # Section d'acier (en mètre carré)
+    As__B = Column(Float) # Section d'acier (en mètre carré)
 
 
     fiche = relationship("FicheCalcul", back_populates="donnees_semelle")

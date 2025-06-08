@@ -29,10 +29,9 @@ class DonneesPoteau(Base):
     i = Column(Float)  # (centimètre)
     gamma = Column(Float)  # L'élancement (pas d'unité)
     alpha = Column(Float)  # (pas d'unité)
-    Br = Column(Float)  # (pas d'unité)
+    Br = Column(Float)  # (centimètre carré)
     Ath = Column(Float)  # (centimètre carré)
-    Ath_cent = Column(Float)  # (centimètre carré)
-    u = Column(Float)  # (pas d'unité)
+    u = Column(Float)  # (mètre)
     A_4u = Column(Float)  # (centimètre carré)
     A_2_percent = Column(Float)  # (centimètre carré)
     A_min = Column(Float)  # (centimètre carré)
@@ -66,14 +65,13 @@ class DonneesPoteau(Base):
         
         self.Br = (self.a - 2)  * (self.b - 2)
         self.Ath = (((self.nu * 10 ** -2) / self.alpha) - ((self.Br * 10 ** -4 * self.fc28) / (0.9 * gamma_b))) * (gamma_s / self.fe) * 10 ** 4
-        self.Ath_cent = self.Ath * 10 ** 4
         self.u = (self.a * (10 ** -2) + self.b * (10 ** -2)) * 2
         self.A_4u = 4 * self.u
         self.A_2_percent = (0.2 * self.Bb) / 100
         self.A_min = max(self.A_4u,self.A_2_percent)
         self.A_5_percent = (5 * self.Bb) / 100
         self.A_max = self.A_5_percent
-        self.As_calc = max(self.Ath_cent, self.A_min)
+        self.As_calc = max(self.Ath, self.A_min)
 
 
         # Enregistrer les résultats dans la base de données
