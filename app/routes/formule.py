@@ -29,6 +29,17 @@ def get_formule(formule_id: int, db: Session = Depends(get_db), user=Depends(get
         raise HTTPException(status_code=404, detail="Formule not found")
     return formule
 
+# # 🔸 Get info of one formule and create automatically a fiche
+# @router.get("/{formule_id}/fiche", response_model=FormuleResponse)
+# def get_formule_fiche(formule_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+#     formule = db.query(Formule).filter(Formule.id == formule_id).first()
+#     if not formule:
+#         raise HTTPException(status_code=404, detail="Formule not found")
+    
+#     # Here you would implement the logic to create a fiche automatically
+#     # For now, we just return the formule
+#     return formule
+
 # 🔸 Update formule
 @router.put("/{formule_id}", response_model=FormuleResponse)
 def update_formule(formule_id: int, updated_data: FormuleUpdate, db: Session = Depends(get_db), user=Depends(get_current_user)):

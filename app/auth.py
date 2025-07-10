@@ -90,7 +90,7 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dep
     if not user:
         raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
     
-    token = create_access_token(user.email, user.id, timedelta(minutes=30))
+    token = create_access_token(user.nom, user.prenom, user.contact, user.role, user.email, user.id, timedelta(minutes=30))
     return {"access_token": token, "token_type": "bearer"}
 
 # Vérification et génération du token
@@ -100,9 +100,13 @@ def authenticate_user(email: str, password: str, db: Session):
         return None
     return user
 
-def create_access_token(email: str, user_id: int, expires_delta: timedelta):
+def create_access_token(nom: str,prenom: str,contact: str, role: str ,email: str, user_id: int, expires_delta: timedelta):
     payload = {
-        "sub": email,
+        "nom": nom,
+        "prenom": prenom,
+        "contact": contact,
+        "role": role,
+        "email": email,
         "id": user_id,
         "exp": datetime.now(timezone.utc) + expires_delta
     }
@@ -112,7 +116,7 @@ def create_access_token(email: str, user_id: int, expires_delta: timedelta):
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], db: db_dependency):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email = payload.get("sub")
+        email = payload.get("email")
         user_id = payload.get("id")
         if email is None or user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")
