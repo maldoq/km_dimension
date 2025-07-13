@@ -3,6 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.formule import Formule
+from app.models.fiche_calcul import FicheCalcul
+from app.schemas.fiche_calcul import FicheCalculResponse
 from app.schemas.formule import FormuleCreate, FormuleUpdate, FormuleResponse
 from app.auth import get_current_user
 from typing import List
@@ -22,12 +24,74 @@ def get_all_formules(db: Session = Depends(get_db), user=Depends(get_current_use
     return db.query(Formule).all()
 
 # 🔹 Get one formule by ID
-@router.get("/{formule_id}", response_model=FormuleResponse)
-def get_formule(formule_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+@router.post("/{formule_id}/fiche-auto")
+def create_fiche_with_data(
+    formule_id: int,
+    db: Session = Depends(get_db),
+    user=Depends(get_current_user)
+):
     formule = db.query(Formule).filter(Formule.id == formule_id).first()
     if not formule:
-        raise HTTPException(status_code=404, detail="Formule not found")
-    return formule
+        raise HTTPException(status_code=404, detail="Formule non trouvée")
+
+    fiche = FicheCalcul(
+        titre=f"Fiche {formule.nom}",
+        formule_id=formule.id,
+        utilisateur_id=user.id
+    )
+    db.add(fiche)
+    db.commit()
+    db.refresh(fiche)
+
+    nom_formule = formule.nom.lower().strip()
+    donnees = None
+    donnees_type = ""
+
+    if "poutrelle" in nom_formule:
+        from app.models.donnee_poutrelle import DonneesPoutrelle
+        donnees = DonneesPoutrelle(fiche_id=fiche.id)
+        db.add(donnees)
+        donnees_type = "poutrelle"
+
+    elif "poutre" in nom_formule:
+        from app.models.donnee_poutre import DonneesPoutre
+        donnees = DonneesPoutre(fiche_id=fiche.id)
+        db.add(donnees)
+        donnees_type = "poutre"
+
+    elif "semelle" in nom_formule:
+        from app.models.donnee_semelle import DonneesSemelle
+        donnees = DonneesSemelle(fiche_id=fiche.id)
+        db.add(donnees)
+        donnees_type = "semelle"
+
+    elif "poteau" in nom_formule:
+        from app.models.donnee_poteau import DonneesPoteau
+        donnees = DonneesPoteau(fiche_id=fiche.id)
+        db.add(donnees)
+        donnees_type = "poteau"
+
+    elif "escalier" in nom_formule:
+        from app.models.donnee_escalier import DonneesEscalier
+        donnees = DonneesEscalier(fiche_id=fiche.id)
+        db.add(donnees)
+        donnees_type = "escalier"
+
+    else:
+        raise HTTPException(status_code=400, detail="Type de formule non pris en charge")
+
+    db.commit()
+    db.refresh(donnees)
+
+    return {
+        "fiche_id": fiche.id,
+        "formule": formule.nom,
+        "donnees_type": donnees_type,
+        "donnees_id": donnees.id,
+        "donnees": donnees.__dict__
+    }
+
+
 
 # # 🔸 Get info of one formule and create automatically a fiche
 # @router.get("/{formule_id}/fiche", response_model=FormuleResponse)
