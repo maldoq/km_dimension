@@ -13,7 +13,7 @@ router = APIRouter(prefix="/formules", tags=["Formules"])
 
 @router.post("/", response_model=FormuleResponse)
 def create_formule(formule: FormuleCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    db_formule = Formule(nom=formule.nom)
+    db_formule = Formule(nom=formule.nom, image_url=formule.image_url)
     db.add(db_formule)
     db.commit()
     db.refresh(db_formule)
@@ -91,26 +91,16 @@ def create_fiche_with_data(
         "donnees": donnees.__dict__
     }
 
-
-
-# # 🔸 Get info of one formule and create automatically a fiche
-# @router.get("/{formule_id}/fiche", response_model=FormuleResponse)
-# def get_formule_fiche(formule_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
-#     formule = db.query(Formule).filter(Formule.id == formule_id).first()
-#     if not formule:
-#         raise HTTPException(status_code=404, detail="Formule not found")
-    
-#     # Here you would implement the logic to create a fiche automatically
-#     # For now, we just return the formule
-#     return formule
-
 # 🔸 Update formule
 @router.put("/{formule_id}", response_model=FormuleResponse)
 def update_formule(formule_id: int, updated_data: FormuleUpdate, db: Session = Depends(get_db), user=Depends(get_current_user)):
     formule = db.query(Formule).filter(Formule.id == formule_id).first()
     if not formule:
         raise HTTPException(status_code=404, detail="Formule not found")
+
     formule.nom = updated_data.nom
+    formule.image_url = updated_data.image_url  # ✅ Ajouté
+
     db.commit()
     db.refresh(formule)
     return formule
