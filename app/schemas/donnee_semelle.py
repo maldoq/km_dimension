@@ -29,19 +29,18 @@ class DonneesSemelleRead(DonneesSemelleBase):
 
 class DonneesSemelleDetail(DonneesSemelleRead):
     image_url: Optional[str]
-    gamma_b: float
-    gamma_s: float
-    ns: float
-    nu: float
-    A: float
-    B: float
-    d1: float
-    d2: float
-    d: float
-    h: float
-    h_metre: float
-    As__A: float
-    As__B: float
+    gamma_s: Optional[float]
+    ns: Optional[float]
+    nu: Optional[float]
+    Aa: Optional[float]
+    Bb: Optional[float]
+    d1: Optional[float]
+    d2: Optional[float]
+    d: Optional[float]
+    h: Optional[float]
+    h_metre: Optional[float]
+    As__A: Optional[float]
+    As__B: Optional[float]
 
     class Config:
         orm_mode = True

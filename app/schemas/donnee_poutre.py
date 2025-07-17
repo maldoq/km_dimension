@@ -9,7 +9,6 @@ class DonneesPoutreBase(BaseModel):
     g: Optional[float]
     q: Optional[float]
     lx: Optional[float]
-    c: Optional[float] 
     h: Optional[float]
     b: Optional[float]
 

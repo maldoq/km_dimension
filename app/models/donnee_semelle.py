@@ -39,7 +39,7 @@ class DonneesSemelle(Base):
     fiche = relationship("FicheCalcul", back_populates="donnees_semelle")
 
     # Fonction
-    def arrondir_personnalise(x):
+    def arrondir_personnalise(self, x):
         n = int(x)  # partie entière de x
         if x < n + 0.5:
             return n + 0.5
