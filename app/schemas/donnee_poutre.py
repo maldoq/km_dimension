@@ -3,7 +3,6 @@ from typing import Optional
 
 
 class DonneesPoutreBase(BaseModel):
-    fiche_id: int
     fc28: Optional[float]
     fe: Optional[float]
     g: Optional[float]

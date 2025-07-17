@@ -9,7 +9,6 @@ class DonneesPoutre(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     image_url = Column(String, nullable=True)  # <--- CHAMP AJOUTÉ
-    fiche_id = Column(Integer, ForeignKey("fichecalcul.id"), unique=True)
 
     # Variables
     fc28 = Column(Float) # (en méga-pascal)
@@ -35,7 +34,6 @@ class DonneesPoutre(Base):
     z = Column(Float) # (en mètre)
     As = Column(Float) # (en mètre carré)
 
-    fiche = relationship("FicheCalcul", back_populates="donnees_poutre")
 
     def calculer(self):
         if self.fc28 is None or self.fe is None or self.g is None or self.q is None or self.lx is None or self.h is None or self.b is None:

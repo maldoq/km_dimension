@@ -18,6 +18,5 @@ class FicheCalcul(Base):
     formule = relationship("Formule", back_populates="fiches")
     utilisateur = relationship("User", back_populates="fiches")
     donnees_poutrelle = relationship("DonneesPoutrelle", back_populates="fiche", uselist=False)
-    donnees_poutre = relationship("DonneesPoutre", back_populates="fiche", uselist=False)
     donnees_poteau = relationship("DonneesPoteau", back_populates="fiche", uselist=False)
     donnees_escalier = relationship("DonneesEscalier", back_populates="fiche", uselist=False)
