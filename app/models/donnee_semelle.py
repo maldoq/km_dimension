@@ -57,7 +57,7 @@ class DonneesSemelle(Base):
         self.nu = (1.35 * self.g) + (1.5 * self.q)
         self.Aa = mt.sqrt((self.a / self.b) * (self.ns / (self.cont_adm * 100)))
         self.Bb = mt.sqrt((self.b / self.a) * (self.ns / (self.cont_adm * 100)))
-        self.Aa = self.arrondir_personnalise(self.A)
+        self.Aa = self.arrondir_personnalise(self.Aa)
         self.Bb = self.arrondir_personnalise(self.Bb)
         self.d1 = (self.Aa - self.a) / 4
         self.d2 = (self.Bb - self.b) / 4

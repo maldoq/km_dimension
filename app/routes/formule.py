@@ -20,7 +20,7 @@ def create_formule(formule: FormuleCreate, db: Session = Depends(get_db), user=D
     return db_formule
 
 @router.get("/", response_model=List[FormuleResponse])
-def get_all_formules(db: Session = Depends(get_db), user=Depends(get_current_user)):
+def get_all_formules(db: Session = Depends(get_db)):
     return db.query(Formule).all()
 
 # 🔹 Get one formule by ID
