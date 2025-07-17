@@ -91,7 +91,7 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dep
         raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
     
     token = create_access_token(user.nom, user.prenom, user.contact, user.role, user.email, user.id, timedelta(minutes=30))
-    return {"access_token": token, "token_type": "bearer"}
+    return {"nom": user.nom, "prenoms": user.prenom, "access_token": token, "token_type": "bearer"}
 
 # Vérification et génération du token
 def authenticate_user(email: str, password: str, db: Session):

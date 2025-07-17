@@ -55,21 +55,18 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
-
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
-    connectable = create_engine(
-        DATABASE_URL,
-        connect_args={"check_same_thread": False}  # utile pour SQLite
+def run_migrations_online():
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
     )
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
+            render_as_batch=True  # <-- c'est cette ligne qui active le mode batch
         )
 
         with context.begin_transaction():

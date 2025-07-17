@@ -3,7 +3,6 @@ from typing import Optional
 
 
 class DonneesSemelleBase(BaseModel):
-    fiche_id: Optional[int]
     a : Optional[float]
     b : Optional[float]
     g : Optional[float]

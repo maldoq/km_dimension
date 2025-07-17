@@ -9,7 +9,6 @@ class DonneesSemelle(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     image_url = Column(String, nullable=True)  # <--- CHAMP AJOUTÉ
-    fiche_id = Column(Integer, ForeignKey("fichecalcul.id"), unique=True, nullable=True)  # <--- CHAMP AJOUTÉ
 
     # Variables
     a = Column(Float) # largeur du poteau (en mètre)
@@ -35,8 +34,6 @@ class DonneesSemelle(Base):
     As__A = Column(Float) # Section d'acier (en mètre carré)
     As__B = Column(Float) # Section d'acier (en mètre carré)
 
-
-    fiche = relationship("FicheCalcul", back_populates="donnees_semelle")
 
     # Fonction
     def arrondir_personnalise(self, x):

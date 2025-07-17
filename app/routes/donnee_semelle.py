@@ -24,7 +24,7 @@ def create(donnees: DonneesSemelleCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/{donnees_id}", response_model=DonneesSemelleDetail)
-def read_one(donnees_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def read_one(donnees_id: int, db: Session = Depends(get_db)):
     db_obj = crud.get_donnees_semelle(db, donnees_id)
     if db_obj is None:
         raise HTTPException(status_code=404, detail="Donnée non trouvée")
@@ -32,12 +32,12 @@ def read_one(donnees_id: int, db: Session = Depends(get_db), current_user: User 
 
 
 @router.get("/", response_model=list[DonneesSemelleRead])
-def read_all(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def read_all(db: Session = Depends(get_db)):
     return crud.get_all_donnees_semelle(db)
 
 
 @router.put("/{donnees_id}", response_model=DonneesSemelleRead)
-def update(donnees_id: int, donnees: DonneesSemelleUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def update(donnees_id: int, donnees: DonneesSemelleUpdate, db: Session = Depends(get_db)):
     db_obj = crud.update_donnees_semelle(db, donnees_id, donnees)
     if db_obj is None:
         raise HTTPException(status_code=404, detail="Donnée non trouvée")
@@ -45,7 +45,7 @@ def update(donnees_id: int, donnees: DonneesSemelleUpdate, db: Session = Depends
 
 
 @router.delete("/{donnees_id}")
-def delete(donnees_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def delete(donnees_id: int, db: Session = Depends(get_db)):
     obj = crud.delete_donnees_semelle(db, donnees_id)
     if obj is None:
         raise HTTPException(status_code=404, detail="Donnée non trouvée")
@@ -63,7 +63,7 @@ def generate_pdf(donnee_id: int, db: Session = Depends(get_db)):
     })
 
 @router.post("/{semelle_id}/upload-image/")
-def upload_image_semelle(semelle_id: int, file: UploadFile = File(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def upload_image_semelle(semelle_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
     semelle = db.query(DonneesSemelle).filter(DonneesSemelle.id == semelle_id).first()
     if not semelle:
         raise HTTPException(status_code=404, detail="semelle non trouvée.")
