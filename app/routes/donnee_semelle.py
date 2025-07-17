@@ -19,7 +19,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.post("/", response_model=DonneesSemelleRead)
-def create(donnees: DonneesSemelleCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create(donnees: DonneesSemelleCreate, db: Session = Depends(get_db)):
     return crud.create_donnees_semelle(db, donnees)
 
 

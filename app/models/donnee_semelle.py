@@ -9,7 +9,7 @@ class DonneesSemelle(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     image_url = Column(String, nullable=True)  # <--- CHAMP AJOUTÉ
-    fiche_id = Column(Integer, ForeignKey("fichecalcul.id"), unique=True)
+    fiche_id = Column(Integer, ForeignKey("fichecalcul.id"), unique=True, nullable=True)  # <--- CHAMP AJOUTÉ
 
     # Variables
     a = Column(Float) # largeur du poteau (en mètre)
